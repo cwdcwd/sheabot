@@ -1,5 +1,17 @@
 package com.lazybaer.sheabot;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
+
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Message;
+
 public class SheaBot
 {
 
@@ -8,8 +20,39 @@ public class SheaBot
 	 */
 	public static void main(String[] args)
 	{
-		// TODO Auto-generated method stub
+		
+		try
+		{
+			Properties prop = new Properties();
+			prop.load(new FileInputStream("config.properties"));
+			
+			Connection connection = new XMPPConnection("gmail.com");
+			System.out.println("firing up conn...");
+			connection.connect();
+			System.out.println("logging in...");
+			connection.login(prop.getProperty("username"), prop.getProperty("password"));
+			Chat chat = connection.getChatManager().createChat("j.fidlow@gmail.com", new MessageListener() {
 
+			    public void processMessage(Chat chat, Message message) {
+			        System.out.println("Received message: " + message);
+			    }
+			});
+			chat.sendMessage("Howdy!");
+			
+		} catch (XMPPException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 }
